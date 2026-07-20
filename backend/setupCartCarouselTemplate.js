@@ -6,7 +6,7 @@
 
 require("dotenv").config();
 const axios = require("axios");
-const { uploadImage } = require("./Uploadmedia");
+const { uploadImage } = require("./uploadMedia");
 
 // Placeholder images for template approval only — Meta needs *an* example
 // image per card slot to review the template. Real product images get

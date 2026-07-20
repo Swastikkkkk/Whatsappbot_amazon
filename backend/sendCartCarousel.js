@@ -4,7 +4,7 @@
 // wait for approval — this file does not submit anything for approval, it
 // just sends real data through the template that's already live.
 
-const { uploadImage } = require("./Uploadmedia");
+const { uploadImage } = require("./uploadMedia");
 
 module.exports = function (send, WA_TOKEN, META_APP_ID) {
 
