@@ -1,0 +1,73 @@
+{
+  "version": "3.1",
+  "screens": [
+    {
+      "id": "ADDRESS_FORM",
+      "title": "Delivery Details",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "address_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "Full Name",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "phone",
+                "label": "Phone Number",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "TextArea",
+                "name": "address",
+                "label": "Delivery Address",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "landmark",
+                "label": "Landmark (optional)",
+                "input-type": "text",
+                "required": false
+              },
+              {
+                "type": "Dropdown",
+                "name": "address_type",
+                "label": "Address Type",
+                "required": true,
+                "data-source": [
+                  { "id": "home", "title": "Home" },
+                  { "id": "work", "title": "Work" },
+                  { "id": "other", "title": "Other" }
+                ]
+              },
+              {
+                "type": "Footer",
+                "label": "Confirm Delivery Details",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "full_name": "${form.full_name}",
+                    "phone": "${form.phone}",
+                    "address": "${form.address}",
+                    "landmark": "${form.landmark}",
+                    "address_type": "${form.address_type}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
