@@ -1082,9 +1082,10 @@ async function confirmDose(doseKey, label) {
 }
 
 function medicineTick() {
-  const now = new Date();
+  // Force IST regardless of server timezone (Render runs in UTC).
+  const istNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
   for (const slot of SCHEDULE) {
-    if (now.getHours() === slot.hour && now.getMinutes() === slot.minute) {
+    if (istNow.getHours() === slot.hour && istNow.getMinutes() === slot.minute) {
       const s = medState[slot.key];
       const alreadyStartedThisMinute = s.startedAt && (Date.now() - s.startedAt) < 60 * 1000;
       if (!alreadyStartedThisMinute) {
@@ -1097,6 +1098,10 @@ function medicineTick() {
 /* ============================================================
    WEBHOOK
 ============================================================ */
+
+app.get("/health", (req, res) => {
+    res.json({ ok: true, time: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }) });
+});
 
 app.get("/webhook", (req, res) => {
     const mode = req.query["hub.mode"];
@@ -1191,6 +1196,13 @@ app.listen(PORT, () => {
     console.log("Webhook:");
     console.log(`http://localhost:${PORT}/webhook`);
     console.log("====================================");
-    console.log("Medicine reminder scheduler active — checking every minute for 9:00 AM / 9:00 PM.");
+    console.log("Medicine reminder scheduler active — checking every minute for 9:00 AM / 9:00 PM (IST).");
     setInterval(medicineTick, 60 * 1000);
+
+    // Keep-alive: ping self every 10 min so Render's free tier doesn't sleep
+    // (a sleeping service = frozen scheduler = missed 9am/9pm reminders).
+    const SELF_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+    setInterval(() => {
+        axios.get(`${SELF_URL}/health`).catch(() => {});
+    }, 10 * 60 * 1000);
 });
